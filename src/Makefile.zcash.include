@@ -1,0 +1,47 @@
+noinst_PROGRAMS += \
+  zcash/GenerateParams \
+  zcash/CreateJoinSplit
+
+if ENABLE_MINING
+bin_PROGRAMS += \
+  zcash-miner
+
+zcash_miner_SOURCES = \
+  libstratum/StratumClient.cpp \
+  libstratum/StratumClient.h \
+  libstratum/ZcashStratum.cpp \
+  libstratum/ZcashStratum.h \
+  metrics.cpp \
+  standaloneminer.cpp
+zcash_miner_CPPFLAGS = $(BITCOIN_INCLUDES) -DSTANDALONE_MINER
+zcash_miner_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+zcash_miner_LDADD = \
+  $(LIBBITCOIN_COMMON) \
+  $(LIBBITCOIN_CRYPTO) \
+  $(LIBUNIVALUE) \
+  $(LIBBITCOIN_UTIL) \
+  $(LIBSECP256K1) \
+  $(BOOST_LIBS) \
+  $(CRYPTO_LIBS) \
+  $(LIBZCASH) \
+  $(LIBZCASH_LIBS)
+endif
+
+# tool for generating our public parameters
+zcash_GenerateParams_SOURCES = zcash/GenerateParams.cpp
+zcash_GenerateParams_LDADD = \
+  $(BOOST_LIBS) \
+  $(LIBZCASH) \
+  $(LIBBITCOIN_UTIL) \
+  $(LIBBITCOIN_CRYPTO) \
+  $(LIBZCASH_LIBS)
+
+# tool for profiling the creation of joinsplits
+zcash_CreateJoinSplit_SOURCES = zcash/CreateJoinSplit.cpp
+zcash_CreateJoinSplit_LDADD = \
+  $(LIBBITCOIN_COMMON) \
+  $(LIBZCASH) \
+  $(LIBBITCOIN_UTIL) \
+  $(LIBBITCOIN_CRYPTO) \
+  $(BOOST_LIBS) \
+  $(LIBZCASH_LIBS)
